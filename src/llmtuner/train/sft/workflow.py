@@ -50,6 +50,8 @@ def run_sft(
     training_args.generation_num_beams = data_args.eval_num_beams or training_args.generation_num_beams
     training_args.remove_unused_columns = False if model_args.visual_inputs else training_args.remove_unused_columns
 
+    # print(model)
+    # exit(0)
     # Initialize our Trainer
     trainer = CustomSeq2SeqTrainer(
         model=model,

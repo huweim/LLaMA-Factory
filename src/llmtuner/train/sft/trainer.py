@@ -11,6 +11,7 @@ from ...extras.constants import IGNORE_INDEX
 from ...extras.logging import get_logger
 from ..utils import create_custom_optimzer, create_custom_scheduler
 
+from llmtuner.utils.make_distribution import make_heat_map, group_dist
 
 if TYPE_CHECKING:
     from transformers.trainer import PredictionOutput
@@ -33,6 +34,29 @@ class CustomSeq2SeqTrainer(Seq2SeqTrainer):
             from badam import clip_grad_norm_for_sparse_tensor
 
             self.accelerator.clip_grad_norm_ = MethodType(clip_grad_norm_for_sparse_tensor, self.accelerator)
+        
+        # self.register_hooks()  # Register hooks during initialization
+        self.counter = 0
+    
+    def register_hooks(self):
+
+        for name, param in self.model.named_parameters():
+            # print(name, param)
+            # exit(0)
+            if param.requires_grad:
+                # param.register_hook(lambda grad, name=name: print(f"Gradient for {name}: {grad}"))
+                # param.register_hook(lambda grad, name=name: print(f"Gradient for {name}: {grad.shape}"))
+                # 
+                def hook_fn(grad, name=name):
+                    self.counter += 1
+                    if grad.dim() == 2 and self.counter > 100000:
+                        print(f"Gradient for {name}: {grad.shape}")
+                        # make_heat_map(grad, name, max_fig=1000)
+                        group_dist(grad, -2, layer_name=name, max_fig=1000, num_img=1000)
+                        print(grad.max(), grad.min())
+                    return grad
+
+                param.register_hook(hook_fn)
 
     def create_optimizer(self) -> "torch.optim.Optimizer":
         if self.optimizer is None:
@@ -66,6 +90,8 @@ class CustomSeq2SeqTrainer(Seq2SeqTrainer):
             if label_len > prompt_len:  # truncate the labels instead of padding the inputs (llama2 fp16 compatibility)
                 inputs["labels"] = inputs["labels"][:, :prompt_len]
 
+        # print(model, "predict")
+        # exit(0)
         loss, generated_tokens, _ = super().prediction_step(  # ignore the returned labels (may be truncated)
             model, inputs, prediction_loss_only=prediction_loss_only, ignore_keys=ignore_keys
         )

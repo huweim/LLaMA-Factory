@@ -28,7 +28,20 @@ class CustomTrainer(Trainer):
             from badam import clip_grad_norm_for_sparse_tensor
 
             self.accelerator.clip_grad_norm_ = MethodType(clip_grad_norm_for_sparse_tensor, self.accelerator)
+        self.register_hooks()  # Register hooks during initialization
+    
+    def register_hooks(self):
+        def print_grad(grad):
+            print(grad)
+            raise RuntimeError("Exiting due to gradient inspection")
 
+        for name, param in self.model.named_parameters():
+            # print(name, param)
+            # exit(0)
+            if param.requires_grad:
+                # param.register_hook(lambda grad, name=name: print(f"Gradient for {name}: {grad}"))
+                param.register_hook(lambda grad, name=name: print(f"Gradient for {name}"))
+                
     def create_optimizer(self) -> "torch.optim.Optimizer":
         if self.optimizer is None:
             self.optimizer = create_custom_optimzer(self.model, self.args, self.finetuning_args)
