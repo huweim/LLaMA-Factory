@@ -3,8 +3,7 @@
 [![GitHub Repo stars](https://img.shields.io/github/stars/hiyouga/LLaMA-Factory?style=social)](https://github.com/hiyouga/LLaMA-Factory/stargazers)
 [![GitHub Code License](https://img.shields.io/github/license/hiyouga/LLaMA-Factory)](LICENSE)
 [![GitHub last commit](https://img.shields.io/github/last-commit/hiyouga/LLaMA-Factory)](https://github.com/hiyouga/LLaMA-Factory/commits/main)
-[![PyPI](https://img.shields.io/pypi/v/llmtuner)](https://pypi.org/project/llmtuner/)
-[![Downloads](https://static.pepy.tech/badge/llmtuner)](https://pypi.org/project/llmtuner/)
+[![PyPI](https://img.shields.io/pypi/v/llamafactory)](https://pypi.org/project/llamafactory/)
 [![Citation](https://img.shields.io/badge/citation-44-green)](#使用了-llama-factory-的项目)
 [![GitHub pull request](https://img.shields.io/badge/PRs-welcome-blue)](https://github.com/hiyouga/LLaMA-Factory/pulls)
 [![Discord](https://dcbadge.vercel.app/api/server/rKfvV9r9FK?compact=true&style=flat)](https://discord.gg/rKfvV9r9FK)
@@ -46,7 +45,7 @@ https://github.com/hiyouga/LLaMA-Factory/assets/16256802/ec36a9dd-37f4-4f72-81bd
 ## 项目特色
 
 - **多种模型**：LLaMA、LLaVA、Mistral、Mixtral-MoE、Qwen、Yi、Gemma、Baichuan、ChatGLM、Phi 等等。
-- **集成方法**：（增量）预训练、（多模态）指令监督微调、奖励模型训练、PPO 训练、DPO 训练和 ORPO 训练。
+- **集成方法**：（增量）预训练、（多模态）指令监督微调、奖励模型训练、PPO 训练、DPO 训练、KTO 训练和 ORPO 训练。
 - **多种精度**：32 比特全参数微调、16 比特冻结微调、16 比特 LoRA 微调和基于 AQLM/AWQ/GPTQ/LLM.int8 的 2/4/8 比特 QLoRA 微调。
 - **先进算法**：GaLore、BAdam、DoRA、LongLoRA、LLaMA Pro、Mixture-of-Depths、LoRA+、LoftQ 和 Agent 微调。
 - **实用技巧**：FlashAttention-2、Unsloth、RoPE scaling、NEFTune 和 rsLoRA。
@@ -70,13 +69,19 @@ https://github.com/hiyouga/LLaMA-Factory/assets/16256802/ec36a9dd-37f4-4f72-81bd
 
 ## 更新日志
 
-[24/05/13] 我们支持了 Yi-1.5 系列模型的微调。
+[24/05/26] 我们支持了 **[SimPO](https://arxiv.org/abs/2405.14734)** 偏好对齐算法。详细用法请参照 [examples](examples/README_zh.md)。
+
+[24/05/20] 我们支持了 **PaliGemma** 系列模型的微调。注意 PaliGemma 是预训练模型，你需要使用 `gemma` 模板进行微调使其获得对话能力。
+
+[24/05/18] 我们支持了 **[KTO](https://arxiv.org/abs/2402.01306)** 偏好对齐算法。详细用法请参照 [examples](examples/README_zh.md)。
+
+<details><summary>展开日志</summary>
+
+[24/05/14] 我们支持了昇腾 NPU 设备的训练和推理。详情请查阅[安装](#安装-llama-factory)部分。
 
 [24/04/26] 我们支持了多模态模型 **LLaVA-1.5** 的微调。详细用法请参照 [examples](examples/README_zh.md)。
 
 [24/04/22] 我们提供了在免费 T4 GPU 上微调 Llama-3 模型的 **[Colab 笔记本](https://colab.research.google.com/drive/1d5KQtbemerlSDSxZIfAaWXhKr30QypiK?usp=sharing)**。Hugging Face 社区公开了两个利用 LLaMA Factory 微调的 Llama-3 模型，详情请见 [Llama3-8B-Chinese-Chat](https://huggingface.co/shenzhi-wang/Llama3-8B-Chinese-Chat) 和 [Llama3-Chinese](https://huggingface.co/zhichen/Llama3-Chinese)。
-
-<details><summary>展开日志</summary>
 
 [24/04/21] 我们基于 [AstraMindAI 的仓库](https://github.com/astramind-ai/Mixture-of-depths)支持了 **[混合深度训练](https://arxiv.org/abs/2404.02258)**。详细用法请参照 [examples](examples/README_zh.md)。
 
@@ -102,7 +107,7 @@ https://github.com/hiyouga/LLaMA-Factory/assets/16256802/ec36a9dd-37f4-4f72-81bd
 
 [24/02/05] Qwen1.5（Qwen2 测试版）系列模型已在 LLaMA-Factory 中实现微调支持。详情请查阅该[博客页面](https://qwenlm.github.io/zh/blog/qwen1.5/)。
 
-[24/01/18] 我们针对绝大多数模型实现了 **Agent 微调**，微调时指定 `dataset: glaive_toolcall` 即可使模型获得工具调用能力。
+[24/01/18] 我们针对绝大多数模型实现了 **Agent 微调**，微调时指定 `dataset: glaive_toolcall_zh` 即可使模型获得工具调用能力。
 
 [23/12/23] 我们针对 LLaMA, Mistral 和 Yi 模型支持了 **[unsloth](https://github.com/unslothai/unsloth)** 的 LoRA 训练加速。请使用 `use_unsloth: true` 参数启用 unsloth 优化。该方法可提供 **170%** 的训练速度，详情请查阅[此页面](https://github.com/hiyouga/LLaMA-Factory/wiki/Performance-comparison)。
 
@@ -148,7 +153,7 @@ https://github.com/hiyouga/LLaMA-Factory/assets/16256802/ec36a9dd-37f4-4f72-81bd
 | [ChatGLM3](https://huggingface.co/THUDM)                 | 6B                               | query_key_value   | chatglm3  |
 | [Command-R](https://huggingface.co/CohereForAI)          | 35B/104B                         | q_proj,v_proj     | cohere    |
 | [DeepSeek (MoE)](https://huggingface.co/deepseek-ai)     | 7B/16B/67B/236B                  | q_proj,v_proj     | deepseek  |
-| [Falcon](https://huggingface.co/tiiuae)                  | 7B/40B/180B                      | query_key_value   | falcon    |
+| [Falcon](https://huggingface.co/tiiuae)                  | 7B/11B/40B/180B                  | query_key_value   | falcon    |
 | [Gemma/CodeGemma](https://huggingface.co/google)         | 2B/7B                            | q_proj,v_proj     | gemma     |
 | [InternLM2](https://huggingface.co/internlm)             | 7B/20B                           | wqkv              | intern2   |
 | [LLaMA](https://github.com/facebookresearch/llama)       | 7B/13B/33B/65B                   | q_proj,v_proj     | -         |
@@ -157,13 +162,15 @@ https://github.com/hiyouga/LLaMA-Factory/assets/16256802/ec36a9dd-37f4-4f72-81bd
 | [LLaVA-1.5](https://huggingface.co/llava-hf)             | 7B/13B                           | q_proj,v_proj     | vicuna    |
 | [Mistral/Mixtral](https://huggingface.co/mistralai)      | 7B/8x7B/8x22B                    | q_proj,v_proj     | mistral   |
 | [OLMo](https://huggingface.co/allenai)                   | 1B/7B                            | q_proj,v_proj     | -         |
+| [PaliGemma](https://huggingface.co/google)               | 3B                               | q_proj,v_proj     | gemma     |
 | [Phi-1.5/2](https://huggingface.co/microsoft)            | 1.3B/2.7B                        | q_proj,v_proj     | -         |
-| [Phi-3](https://huggingface.co/microsoft)                | 3.8B                             | qkv_proj          | phi       |
+| [Phi-3](https://huggingface.co/microsoft)                | 4B/7B/14B                        | qkv_proj          | phi       |
 | [Qwen](https://huggingface.co/Qwen)                      | 1.8B/7B/14B/72B                  | c_attn            | qwen      |
 | [Qwen1.5 (Code/MoE)](https://huggingface.co/Qwen)        | 0.5B/1.8B/4B/7B/14B/32B/72B/110B | q_proj,v_proj     | qwen      |
 | [StarCoder2](https://huggingface.co/bigcode)             | 3B/7B/15B                        | q_proj,v_proj     | -         |
 | [XVERSE](https://huggingface.co/xverse)                  | 7B/13B/65B                       | q_proj,v_proj     | xverse    |
 | [Yi (1/1.5)](https://huggingface.co/01-ai)               | 6B/9B/34B                        | q_proj,v_proj     | yi        |
+| [Yi-VL](https://huggingface.co/01-ai)                    | 6B/34B                           | q_proj,v_proj     | yi_vl     |
 | [Yuan](https://huggingface.co/IEITYuan)                  | 2B/51B/102B                      | q_proj,v_proj     | yuan      |
 
 > [!NOTE]
@@ -173,9 +180,9 @@ https://github.com/hiyouga/LLaMA-Factory/assets/16256802/ec36a9dd-37f4-4f72-81bd
 >
 > 请务必在训练和推理时使用**完全一致**的模板。
 
-项目所支持模型的完整列表请参阅 [constants.py](src/llmtuner/extras/constants.py)。
+项目所支持模型的完整列表请参阅 [constants.py](src/llamafactory/extras/constants.py)。
 
-您也可以在 [template.py](src/llmtuner/data/template.py) 中添加自己的对话模板。
+您也可以在 [template.py](src/llamafactory/data/template.py) 中添加自己的对话模板。
 
 ## 训练方法
 
@@ -186,7 +193,9 @@ https://github.com/hiyouga/LLaMA-Factory/assets/16256802/ec36a9dd-37f4-4f72-81bd
 | 奖励模型训练            | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | PPO 训练               | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | DPO 训练               | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| KTO 训练               | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | ORPO 训练              | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| SimPO 训练             | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 
 ## 数据集
 
@@ -206,12 +215,12 @@ https://github.com/hiyouga/LLaMA-Factory/assets/16256802/ec36a9dd-37f4-4f72-81bd
 
 <details><summary>指令微调数据集</summary>
 
-- [Stanford Alpaca (en)](https://github.com/tatsu-lab/stanford_alpaca)
-- [Stanford Alpaca (zh)](https://github.com/ymcui/Chinese-LLaMA-Alpaca)
-- [Alpaca GPT4 (en&zh)](https://github.com/Instruction-Tuning-with-GPT-4/GPT-4-LLM)
 - [Identity (en&zh)](data/identity.json)
-- [Open Assistant (zh)](https://huggingface.co/datasets/OpenAssistant/oasst1)
-- [ShareGPT (zh)](https://huggingface.co/datasets/QingyiSi/Alpaca-CoT/tree/main/Chinese-instruction-collection)
+- [Stanford Alpaca (en)](https://github.com/tatsu-lab/stanford_alpaca)
+- [Stanford Alpaca (zh)](https://github.com/ymcui/Chinese-LLaMA-Alpaca-3)
+- [Alpaca GPT4 (en&zh)](https://github.com/Instruction-Tuning-with-GPT-4/GPT-4-LLM)
+- [Glaive Function Calling V2 (en&zh)](https://huggingface.co/datasets/glaiveai/glaive-function-calling-v2)
+- [LIMA (en)](https://huggingface.co/datasets/GAIR/lima)
 - [Guanaco Dataset (multilingual)](https://huggingface.co/datasets/JosephusCheung/GuanacoDataset)
 - [BELLE 2M (zh)](https://huggingface.co/datasets/BelleGroup/train_2M_CN)
 - [BELLE 1M (zh)](https://huggingface.co/datasets/BelleGroup/train_1M_CN)
@@ -220,7 +229,6 @@ https://github.com/hiyouga/LLaMA-Factory/assets/16256802/ec36a9dd-37f4-4f72-81bd
 - [BELLE School Math 0.25M (zh)](https://huggingface.co/datasets/BelleGroup/school_math_0.25M)
 - [BELLE Multiturn Chat 0.8M (zh)](https://huggingface.co/datasets/BelleGroup/multiturn_chat_0.8M)
 - [UltraChat (en)](https://github.com/thunlp/UltraChat)
-- [LIMA (en)](https://huggingface.co/datasets/GAIR/lima)
 - [OpenPlatypus (en)](https://huggingface.co/datasets/garage-bAInd/Open-Platypus)
 - [CodeAlpaca 20k (en)](https://huggingface.co/datasets/sahil2801/CodeAlpaca-20k)
 - [Alpaca CoT (multilingual)](https://huggingface.co/datasets/QingyiSi/Alpaca-CoT)
@@ -233,15 +241,16 @@ https://github.com/hiyouga/LLaMA-Factory/assets/16256802/ec36a9dd-37f4-4f72-81bd
 - [WebNovel (zh)](https://huggingface.co/datasets/zxbsmk/webnovel_cn)
 - [Nectar (en)](https://huggingface.co/datasets/berkeley-nest/Nectar)
 - [deepctrl (en&zh)](https://www.modelscope.cn/datasets/deepctrl/deepctrl-sft-data)
-- [Ad Gen (zh)](https://huggingface.co/datasets/HasturOfficial/adgen)
+- [Advertise Generating (zh)](https://huggingface.co/datasets/HasturOfficial/adgen)
 - [ShareGPT Hyperfiltered (en)](https://huggingface.co/datasets/totally-not-an-llm/sharegpt-hyperfiltered-3k)
 - [ShareGPT4 (en&zh)](https://huggingface.co/datasets/shibing624/sharegpt_gpt4)
 - [UltraChat 200k (en)](https://huggingface.co/datasets/HuggingFaceH4/ultrachat_200k)
 - [AgentInstruct (en)](https://huggingface.co/datasets/THUDM/AgentInstruct)
 - [LMSYS Chat 1M (en)](https://huggingface.co/datasets/lmsys/lmsys-chat-1m)
 - [Evol Instruct V2 (en)](https://huggingface.co/datasets/WizardLM/WizardLM_evol_instruct_V2_196k)
-- [Glaive Function Calling V2 (en)](https://huggingface.co/datasets/glaiveai/glaive-function-calling-v2)
 - [Cosmopedia (en)](https://huggingface.co/datasets/HuggingFaceTB/cosmopedia)
+- [STEM (zh)](https://huggingface.co/datasets/hfl/stem_zh_instruction)
+- [Ruozhiba (zh)](https://huggingface.co/datasets/hfl/ruozhiba_gpt4_turbo)
 - [LLaVA mixed (en&zh)](https://huggingface.co/datasets/BUAADreamer/llava-en-zh-300k)
 - [Open Assistant (de)](https://huggingface.co/datasets/mayflowergmbh/oasst_de)
 - [Dolly 15k (de)](https://huggingface.co/datasets/mayflowergmbh/dolly-15k_de)
@@ -257,13 +266,12 @@ https://github.com/hiyouga/LLaMA-Factory/assets/16256802/ec36a9dd-37f4-4f72-81bd
 
 <details><summary>偏好数据集</summary>
 
-- [HH-RLHF (en)](https://huggingface.co/datasets/Anthropic/hh-rlhf)
-- [GPT-4 Generated Data (en&zh)](https://github.com/Instruction-Tuning-with-GPT-4/GPT-4-LLM)
-- [Orca DPO (en)](https://huggingface.co/datasets/Intel/orca_dpo_pairs)
-- [Nectar (en)](https://huggingface.co/datasets/berkeley-nest/Nectar)
 - [DPO mixed (en&zh)](https://huggingface.co/datasets/hiyouga/DPO-En-Zh-20k)
-- [Open Assistant (zh)](https://huggingface.co/datasets/OpenAssistant/oasst1)
+- [Orca DPO Pairs (en)](https://huggingface.co/datasets/Intel/orca_dpo_pairs)
+- [HH-RLHF (en)](https://huggingface.co/datasets/Anthropic/hh-rlhf)
+- [Nectar (en)](https://huggingface.co/datasets/berkeley-nest/Nectar)
 - [Orca DPO (de)](https://huggingface.co/datasets/mayflowergmbh/intel_orca_dpo_pairs_de)
+- [KTO mixed (en)](https://huggingface.co/datasets/argilla/kto-mix-15k)
 
 </details>
 
@@ -280,11 +288,11 @@ huggingface-cli login
 | ------------ | ------- | --------- |
 | python       | 3.8     | 3.10      |
 | torch        | 1.13.1  | 2.2.0     |
-| transformers | 4.37.2  | 4.40.1    |
+| transformers | 4.37.2  | 4.41.0    |
 | datasets     | 2.14.3  | 2.19.1    |
-| accelerate   | 0.27.2  | 0.30.0    |
-| peft         | 0.9.0   | 0.10.0    |
-| trl          | 0.8.1   | 0.8.6     |
+| accelerate   | 0.27.2  | 0.30.1    |
+| peft         | 0.9.0   | 0.11.1    |
+| trl          | 0.8.2   | 0.8.6     |
 
 | 可选项       | 至少     | 推荐      |
 | ------------ | ------- | --------- |
@@ -316,7 +324,7 @@ huggingface-cli login
 > 此步骤为必需。
 
 ```bash
-git clone https://github.com/hiyouga/LLaMA-Factory.git
+git clone --depth 1 https://github.com/hiyouga/LLaMA-Factory.git
 cd LLaMA-Factory
 pip install -e .[torch,metrics]
 ```
@@ -335,6 +343,30 @@ pip install https://github.com/jllllll/bitsandbytes-windows-webui/releases/downl
 ```
 
 如果要在 Windows 平台上开启 FlashAttention-2，需要安装预编译的 `flash-attn` 库，支持 CUDA 12.1 到 12.2，请根据需求到 [flash-attention](https://github.com/bdashore3/flash-attention/releases) 下载对应版本安装。
+
+</details>
+
+<details><summary>昇腾 NPU 用户指南</summary>
+
+加入 [NPU 用户群](assets/wechat_npu.jpg)。
+
+如果使用昇腾 NPU 设备进行（分布式）训练或推理，需要安装 **[torch-npu](https://gitee.com/ascend/pytorch)** 库和 **[Ascend CANN Kernels](https://www.hiascend.com/developer/download/community/result?module=cann)**。
+
+| 依赖项       | 至少     | 推荐      |
+| ------------ | ------- | --------- |
+| CANN         | 8.0.RC1 | 8.0.RC1   |
+| torch        | 2.2.0   | 2.2.0     |
+| torch-npu    | 2.2.0   | 2.2.0     |
+| deepspeed    | 0.13.2  | 0.13.2    |
+
+Docker 镜像：
+
+- 32GB：[下载地址](http://mirrors.cn-central-221.ovaijisuan.com/detail/130.html)
+- 64GB：[下载地址](http://mirrors.cn-central-221.ovaijisuan.com/detail/131.html)
+
+请记得使用 `ASCEND_RT_VISIBLE_DEVICES` 而非 `CUDA_VISIBLE_DEVICES` 来指定您使用的设备。
+
+如果遇到无法正常推理的情况，请尝试设置 `do_sample: false`。
 
 </details>
 
@@ -370,22 +402,6 @@ CUDA_VISIBLE_DEVICES=0 llamafactory-cli export examples/merge_lora/llama3_lora_s
 ```bash
 CUDA_VISIBLE_DEVICES=0 GRADIO_SHARE=1 llamafactory-cli webui
 ```
-
-<details><summary>阿里云 PAI 和 AutoDL 用户指南</summary>
-
-如果您在阿里云 PAI 上使用 LLaMA Board 时遇到显示问题，请尝试在启动前使用以下命令设置环境变量：
-
-```bash
-export GRADIO_SERVER_PORT=7860 GRADIO_ROOT_PATH=/${JUPYTER_NAME}/proxy/7860/
-```
-
-如果您正在使用 AutoDL，请安装下述 Gradio 版本：
-
-```bash
-pip install gradio==4.10.0
-```
-
-</details>
 
 #### 使用 Docker
 
@@ -477,7 +493,7 @@ export USE_MODELSCOPE_HUB=1 # Windows 使用 `set USE_MODELSCOPE_HUB=1`
 1. Zhou et al. FREB-TQA: A Fine-Grained Robustness Evaluation Benchmark for Table Question Answering. 2024. [[arxiv]](https://arxiv.org/abs/2404.18585)
 1. **[StarWhisper](https://github.com/Yu-Yang-Li/StarWhisper)**: 天文大模型 StarWhisper，基于 ChatGLM2-6B 和 Qwen-14B 在天文数据上微调而得。
 1. **[DISC-LawLLM](https://github.com/FudanDISC/DISC-LawLLM)**: 中文法律领域大模型 DISC-LawLLM，基于 Baichuan-13B 微调而得，具有法律推理和知识检索能力。
-1. **[Sunsimiao](https://github.com/thomas-yanxin/Sunsimiao)**: 孙思邈中文医疗大模型 Sumsimiao，基于 Baichuan-7B 和 ChatGLM-6B 在中文医疗数据上微调而得。
+1. **[Sunsimiao](https://github.com/X-D-Lab/Sunsimiao)**: 孙思邈中文医疗大模型 Sumsimiao，基于 Baichuan-7B 和 ChatGLM-6B 在中文医疗数据上微调而得。
 1. **[CareGPT](https://github.com/WangRongsheng/CareGPT)**: 医疗大模型项目 CareGPT，基于 LLaMA2-7B 和 Baichuan-13B 在中文医疗数据上微调而得。
 1. **[MachineMindset](https://github.com/PKU-YuanGroup/Machine-Mindset/)**：MBTI性格大模型项目，根据数据集与训练方式让任意 LLM 拥有 16 个不同的性格类型。
 1. **[Luminia-13B-v3](https://huggingface.co/Nekochu/Luminia-13B-v3)**：一个用于生成 Stable Diffusion 提示词的大型语言模型。[[🤗Demo]](https://huggingface.co/spaces/Nekochu/Luminia-13B_SD_Prompt)

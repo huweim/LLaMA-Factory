@@ -3,8 +3,7 @@
 [![GitHub Repo stars](https://img.shields.io/github/stars/hiyouga/LLaMA-Factory?style=social)](https://github.com/hiyouga/LLaMA-Factory/stargazers)
 [![GitHub Code License](https://img.shields.io/github/license/hiyouga/LLaMA-Factory)](LICENSE)
 [![GitHub last commit](https://img.shields.io/github/last-commit/hiyouga/LLaMA-Factory)](https://github.com/hiyouga/LLaMA-Factory/commits/main)
-[![PyPI](https://img.shields.io/pypi/v/llmtuner)](https://pypi.org/project/llmtuner/)
-[![Downloads](https://static.pepy.tech/badge/llmtuner)](https://pypi.org/project/llmtuner/)
+[![PyPI](https://img.shields.io/pypi/v/llamafactory)](https://pypi.org/project/llamafactory/)
 [![Citation](https://img.shields.io/badge/citation-44-green)](#projects-using-llama-factory)
 [![GitHub pull request](https://img.shields.io/badge/PRs-welcome-blue)](https://github.com/hiyouga/LLaMA-Factory/pulls)
 [![Discord](https://dcbadge.vercel.app/api/server/rKfvV9r9FK?compact=true&style=flat)](https://discord.gg/rKfvV9r9FK)
@@ -46,7 +45,7 @@ Choose your path:
 ## Features
 
 - **Various models**: LLaMA, LLaVA, Mistral, Mixtral-MoE, Qwen, Yi, Gemma, Baichuan, ChatGLM, Phi, etc.
-- **Integrated methods**: (Continuous) pre-training, (multimodal) supervised fine-tuning, reward modeling, PPO, DPO and ORPO.
+- **Integrated methods**: (Continuous) pre-training, (multimodal) supervised fine-tuning, reward modeling, PPO, DPO, KTO and ORPO.
 - **Scalable resources**: 32-bit full-tuning, 16-bit freeze-tuning, 16-bit LoRA and 2/4/8-bit QLoRA via AQLM/AWQ/GPTQ/LLM.int8.
 - **Advanced algorithms**: GaLore, BAdam, DoRA, LongLoRA, LLaMA Pro, Mixture-of-Depths, LoRA+, LoftQ and Agent tuning.
 - **Practical tricks**: FlashAttention-2, Unsloth, RoPE scaling, NEFTune and rsLoRA.
@@ -70,13 +69,19 @@ Compared to ChatGLM's [P-Tuning](https://github.com/THUDM/ChatGLM2-6B/tree/main/
 
 ## Changelog
 
-[24/05/13] We supported fine-tuning the **Yi-1.5** series models.
+[24/05/26] We supported **[SimPO](https://arxiv.org/abs/2405.14734)** algorithm for preference learning. See [examples](examples/README.md) for usage.
+
+[24/05/20] We supported fine-tuning the **PaliGemma** series models. Note that the PaliGemma models are pre-trained models, you need to fine-tune them with `gemma` template for chat completion.
+
+[24/05/18] We supported **[KTO](https://arxiv.org/abs/2402.01306)** algorithm for preference learning. See [examples](examples/README.md) for usage.
+
+<details><summary>Full Changelog</summary>
+
+[24/05/14] We supported training and inference on the Ascend NPU devices. Check [installation](#installation) section for details.
 
 [24/04/26] We supported fine-tuning the **LLaVA-1.5** multimodal LLMs. See [examples](examples/README.md) for usage.
 
 [24/04/22] We provided a **[Colab notebook](https://colab.research.google.com/drive/1eRTPn37ltBbYsISy9Aw2NuI2Aq5CQrD9?usp=sharing)** for fine-tuning the Llama-3 model on a free T4 GPU. Two Llama-3-derived models fine-tuned using LLaMA Factory are available at Hugging Face, check [Llama3-8B-Chinese-Chat](https://huggingface.co/shenzhi-wang/Llama3-8B-Chinese-Chat) and [Llama3-Chinese](https://huggingface.co/zhichen/Llama3-Chinese) for details.
-
-<details><summary>Full Changelog</summary>
 
 [24/04/21] We supported **[Mixture-of-Depths](https://arxiv.org/abs/2404.02258)** according to [AstraMindAI's implementation](https://github.com/astramind-ai/Mixture-of-depths). See [examples](examples/README.md) for usage.
 
@@ -102,7 +107,7 @@ Compared to ChatGLM's [P-Tuning](https://github.com/THUDM/ChatGLM2-6B/tree/main/
 
 [24/02/05] Qwen1.5 (Qwen2 beta version) series models are supported in LLaMA-Factory. Check this [blog post](https://qwenlm.github.io/blog/qwen1.5/) for details.
 
-[24/01/18] We supported **agent tuning** for most models, equipping model with tool using abilities by fine-tuning with `dataset: glaive_toolcall`.
+[24/01/18] We supported **agent tuning** for most models, equipping model with tool using abilities by fine-tuning with `dataset: glaive_toolcall_en`.
 
 [23/12/23] We supported **[unsloth](https://github.com/unslothai/unsloth)**'s implementation to boost LoRA tuning for the LLaMA, Mistral and Yi models. Try `use_unsloth: true` argument to activate unsloth patch. It achieves **170%** speed in our benchmark, check [this page](https://github.com/hiyouga/LLaMA-Factory/wiki/Performance-comparison) for details.
 
@@ -148,7 +153,7 @@ Compared to ChatGLM's [P-Tuning](https://github.com/THUDM/ChatGLM2-6B/tree/main/
 | [ChatGLM3](https://huggingface.co/THUDM)                 | 6B                               | query_key_value   | chatglm3  |
 | [Command-R](https://huggingface.co/CohereForAI)          | 35B/104B                         | q_proj,v_proj     | cohere    |
 | [DeepSeek (MoE)](https://huggingface.co/deepseek-ai)     | 7B/16B/67B/236B                  | q_proj,v_proj     | deepseek  |
-| [Falcon](https://huggingface.co/tiiuae)                  | 7B/40B/180B                      | query_key_value   | falcon    |
+| [Falcon](https://huggingface.co/tiiuae)                  | 7B/11B/40B/180B                  | query_key_value   | falcon    |
 | [Gemma/CodeGemma](https://huggingface.co/google)         | 2B/7B                            | q_proj,v_proj     | gemma     |
 | [InternLM2](https://huggingface.co/internlm)             | 7B/20B                           | wqkv              | intern2   |
 | [LLaMA](https://github.com/facebookresearch/llama)       | 7B/13B/33B/65B                   | q_proj,v_proj     | -         |
@@ -157,13 +162,15 @@ Compared to ChatGLM's [P-Tuning](https://github.com/THUDM/ChatGLM2-6B/tree/main/
 | [LLaVA-1.5](https://huggingface.co/llava-hf)             | 7B/13B                           | q_proj,v_proj     | vicuna    |
 | [Mistral/Mixtral](https://huggingface.co/mistralai)      | 7B/8x7B/8x22B                    | q_proj,v_proj     | mistral   |
 | [OLMo](https://huggingface.co/allenai)                   | 1B/7B                            | q_proj,v_proj     | -         |
+| [PaliGemma](https://huggingface.co/google)               | 3B                               | q_proj,v_proj     | gemma     |
 | [Phi-1.5/2](https://huggingface.co/microsoft)            | 1.3B/2.7B                        | q_proj,v_proj     | -         |
-| [Phi-3](https://huggingface.co/microsoft)                | 3.8B                             | qkv_proj          | phi       |
+| [Phi-3](https://huggingface.co/microsoft)                | 4B/7B/14B                        | qkv_proj          | phi       |
 | [Qwen](https://huggingface.co/Qwen)                      | 1.8B/7B/14B/72B                  | c_attn            | qwen      |
 | [Qwen1.5 (Code/MoE)](https://huggingface.co/Qwen)        | 0.5B/1.8B/4B/7B/14B/32B/72B/110B | q_proj,v_proj     | qwen      |
 | [StarCoder2](https://huggingface.co/bigcode)             | 3B/7B/15B                        | q_proj,v_proj     | -         |
 | [XVERSE](https://huggingface.co/xverse)                  | 7B/13B/65B                       | q_proj,v_proj     | xverse    |
 | [Yi (1/1.5)](https://huggingface.co/01-ai)               | 6B/9B/34B                        | q_proj,v_proj     | yi        |
+| [Yi-VL](https://huggingface.co/01-ai)                    | 6B/34B                           | q_proj,v_proj     | yi_vl     |
 | [Yuan](https://huggingface.co/IEITYuan)                  | 2B/51B/102B                      | q_proj,v_proj     | yuan      |
 
 > [!NOTE]
@@ -173,9 +180,9 @@ Compared to ChatGLM's [P-Tuning](https://github.com/THUDM/ChatGLM2-6B/tree/main/
 >
 > Remember to use the **SAME** template in training and inference.
 
-Please refer to [constants.py](src/llmtuner/extras/constants.py) for a full list of models we supported.
+Please refer to [constants.py](src/llamafactory/extras/constants.py) for a full list of models we supported.
 
-You also can add a custom chat template to [template.py](src/llmtuner/data/template.py).
+You also can add a custom chat template to [template.py](src/llamafactory/data/template.py).
 
 ## Supported Training Approaches
 
@@ -186,7 +193,9 @@ You also can add a custom chat template to [template.py](src/llmtuner/data/templ
 | Reward Modeling        | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | PPO Training           | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | DPO Training           | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| KTO Training           | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | ORPO Training          | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| SimPO Training         | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 
 ## Provided Datasets
 
@@ -206,12 +215,12 @@ You also can add a custom chat template to [template.py](src/llmtuner/data/templ
 
 <details><summary>Supervised fine-tuning datasets</summary>
 
-- [Stanford Alpaca (en)](https://github.com/tatsu-lab/stanford_alpaca)
-- [Stanford Alpaca (zh)](https://github.com/ymcui/Chinese-LLaMA-Alpaca)
-- [Alpaca GPT4 (en&zh)](https://github.com/Instruction-Tuning-with-GPT-4/GPT-4-LLM)
 - [Identity (en&zh)](data/identity.json)
-- [Open Assistant (zh)](https://huggingface.co/datasets/OpenAssistant/oasst1)
-- [ShareGPT (zh)](https://huggingface.co/datasets/QingyiSi/Alpaca-CoT/tree/main/Chinese-instruction-collection)
+- [Stanford Alpaca (en)](https://github.com/tatsu-lab/stanford_alpaca)
+- [Stanford Alpaca (zh)](https://github.com/ymcui/Chinese-LLaMA-Alpaca-3)
+- [Alpaca GPT4 (en&zh)](https://github.com/Instruction-Tuning-with-GPT-4/GPT-4-LLM)
+- [Glaive Function Calling V2 (en&zh)](https://huggingface.co/datasets/glaiveai/glaive-function-calling-v2)
+- [LIMA (en)](https://huggingface.co/datasets/GAIR/lima)
 - [Guanaco Dataset (multilingual)](https://huggingface.co/datasets/JosephusCheung/GuanacoDataset)
 - [BELLE 2M (zh)](https://huggingface.co/datasets/BelleGroup/train_2M_CN)
 - [BELLE 1M (zh)](https://huggingface.co/datasets/BelleGroup/train_1M_CN)
@@ -220,7 +229,6 @@ You also can add a custom chat template to [template.py](src/llmtuner/data/templ
 - [BELLE School Math 0.25M (zh)](https://huggingface.co/datasets/BelleGroup/school_math_0.25M)
 - [BELLE Multiturn Chat 0.8M (zh)](https://huggingface.co/datasets/BelleGroup/multiturn_chat_0.8M)
 - [UltraChat (en)](https://github.com/thunlp/UltraChat)
-- [LIMA (en)](https://huggingface.co/datasets/GAIR/lima)
 - [OpenPlatypus (en)](https://huggingface.co/datasets/garage-bAInd/Open-Platypus)
 - [CodeAlpaca 20k (en)](https://huggingface.co/datasets/sahil2801/CodeAlpaca-20k)
 - [Alpaca CoT (multilingual)](https://huggingface.co/datasets/QingyiSi/Alpaca-CoT)
@@ -233,15 +241,16 @@ You also can add a custom chat template to [template.py](src/llmtuner/data/templ
 - [WebNovel (zh)](https://huggingface.co/datasets/zxbsmk/webnovel_cn)
 - [Nectar (en)](https://huggingface.co/datasets/berkeley-nest/Nectar)
 - [deepctrl (en&zh)](https://www.modelscope.cn/datasets/deepctrl/deepctrl-sft-data)
-- [Ad Gen (zh)](https://huggingface.co/datasets/HasturOfficial/adgen)
+- [Advertise Generating (zh)](https://huggingface.co/datasets/HasturOfficial/adgen)
 - [ShareGPT Hyperfiltered (en)](https://huggingface.co/datasets/totally-not-an-llm/sharegpt-hyperfiltered-3k)
 - [ShareGPT4 (en&zh)](https://huggingface.co/datasets/shibing624/sharegpt_gpt4)
 - [UltraChat 200k (en)](https://huggingface.co/datasets/HuggingFaceH4/ultrachat_200k)
 - [AgentInstruct (en)](https://huggingface.co/datasets/THUDM/AgentInstruct)
 - [LMSYS Chat 1M (en)](https://huggingface.co/datasets/lmsys/lmsys-chat-1m)
 - [Evol Instruct V2 (en)](https://huggingface.co/datasets/WizardLM/WizardLM_evol_instruct_V2_196k)
-- [Glaive Function Calling V2 (en)](https://huggingface.co/datasets/glaiveai/glaive-function-calling-v2)
 - [Cosmopedia (en)](https://huggingface.co/datasets/HuggingFaceTB/cosmopedia)
+- [STEM (zh)](https://huggingface.co/datasets/hfl/stem_zh_instruction)
+- [Ruozhiba (zh)](https://huggingface.co/datasets/hfl/ruozhiba_gpt4_turbo)
 - [LLaVA mixed (en&zh)](https://huggingface.co/datasets/BUAADreamer/llava-en-zh-300k)
 - [Open Assistant (de)](https://huggingface.co/datasets/mayflowergmbh/oasst_de)
 - [Dolly 15k (de)](https://huggingface.co/datasets/mayflowergmbh/dolly-15k_de)
@@ -257,13 +266,12 @@ You also can add a custom chat template to [template.py](src/llmtuner/data/templ
 
 <details><summary>Preference datasets</summary>
 
-- [HH-RLHF (en)](https://huggingface.co/datasets/Anthropic/hh-rlhf)
-- [GPT-4 Generated Data (en&zh)](https://github.com/Instruction-Tuning-with-GPT-4/GPT-4-LLM)
-- [Orca DPO (en)](https://huggingface.co/datasets/Intel/orca_dpo_pairs)
-- [Nectar (en)](https://huggingface.co/datasets/berkeley-nest/Nectar)
 - [DPO mixed (en&zh)](https://huggingface.co/datasets/hiyouga/DPO-En-Zh-20k)
-- [Open Assistant (zh)](https://huggingface.co/datasets/OpenAssistant/oasst1)
+- [Orca DPO Pairs (en)](https://huggingface.co/datasets/Intel/orca_dpo_pairs)
+- [HH-RLHF (en)](https://huggingface.co/datasets/Anthropic/hh-rlhf)
+- [Nectar (en)](https://huggingface.co/datasets/berkeley-nest/Nectar)
 - [Orca DPO (de)](https://huggingface.co/datasets/mayflowergmbh/intel_orca_dpo_pairs_de)
+- [KTO mixed (en)](https://huggingface.co/datasets/argilla/kto-mix-15k)
 
 </details>
 
@@ -280,11 +288,11 @@ huggingface-cli login
 | ------------ | ------- | --------- |
 | python       | 3.8     | 3.10      |
 | torch        | 1.13.1  | 2.2.0     |
-| transformers | 4.37.2  | 4.40.1    |
+| transformers | 4.37.2  | 4.41.0    |
 | datasets     | 2.14.3  | 2.19.1    |
-| accelerate   | 0.27.2  | 0.30.0    |
-| peft         | 0.9.0   | 0.10.0    |
-| trl          | 0.8.1   | 0.8.6     |
+| accelerate   | 0.27.2  | 0.30.1    |
+| peft         | 0.9.0   | 0.11.1    |
+| trl          | 0.8.2   | 0.8.6     |
 
 | Optional     | Minimum | Recommend |
 | ------------ | ------- | --------- |
@@ -316,7 +324,7 @@ huggingface-cli login
 > Installation is mandatory.
 
 ```bash
-git clone https://github.com/hiyouga/LLaMA-Factory.git
+git clone --depth 1 https://github.com/hiyouga/LLaMA-Factory.git
 cd LLaMA-Factory
 pip install -e .[torch,metrics]
 ```
@@ -328,13 +336,37 @@ Extra dependencies available: torch, metrics, deepspeed, bitsandbytes, vllm, gal
 
 <details><summary>For Windows users</summary>
 
-If you want to enable the quantized LoRA (QLoRA) on the Windows platform, you will be required to install a pre-built version of `bitsandbytes` library, which supports CUDA 11.1 to 12.2, please select the appropriate [release version](https://github.com/jllllll/bitsandbytes-windows-webui/releases/tag/wheels) based on your CUDA version.
+If you want to enable the quantized LoRA (QLoRA) on the Windows platform, you need to install a pre-built version of `bitsandbytes` library, which supports CUDA 11.1 to 12.2, please select the appropriate [release version](https://github.com/jllllll/bitsandbytes-windows-webui/releases/tag/wheels) based on your CUDA version.
 
 ```bash
 pip install https://github.com/jllllll/bitsandbytes-windows-webui/releases/download/wheels/bitsandbytes-0.41.2.post2-py3-none-win_amd64.whl
 ```
 
 To enable FlashAttention-2 on the Windows platform, you need to install the precompiled `flash-attn` library, which supports CUDA 12.1 to 12.2. Please download the corresponding version from [flash-attention](https://github.com/bdashore3/flash-attention/releases) based on your requirements.
+
+</details>
+
+<details><summary>For Ascend NPU users</summary>
+
+Join [NPU user group](assets/wechat_npu.jpg).
+
+To utilize Ascend NPU devices for (distributed) training and inference, you need to install the **[torch-npu](https://gitee.com/ascend/pytorch)** library and the **[Ascend CANN Kernels](https://www.hiascend.com/developer/download/community/result?module=cann)**.
+
+| Requirement  | Minimum | Recommend |
+| ------------ | ------- | --------- |
+| CANN         | 8.0.RC1 | 8.0.RC1   |
+| torch        | 2.2.0   | 2.2.0     |
+| torch-npu    | 2.2.0   | 2.2.0     |
+| deepspeed    | 0.13.2  | 0.13.2    |
+
+Docker image:
+
+- 32GB: [Download page](http://mirrors.cn-central-221.ovaijisuan.com/detail/130.html)
+- 64GB: [Download page](http://mirrors.cn-central-221.ovaijisuan.com/detail/131.html)
+
+Remember to use `ASCEND_RT_VISIBLE_DEVICES` instead of `CUDA_VISIBLE_DEVICES` to specify the device to use.
+
+If you cannot infer model on NPU devices, try setting `do_sample: false` in the configurations.
 
 </details>
 
@@ -369,20 +401,6 @@ See [examples/README.md](examples/README.md) for advanced usage (including distr
 
 ```bash
 CUDA_VISIBLE_DEVICES=0 GRADIO_SHARE=1 llamafactory-cli webui
-```
-
-<details><summary>For Alibaba Cloud PAI or AutoDL users</summary>
-
-If you encountered display problems in LLaMA Board on Alibaba Cloud PAI, try using the following command to set environment variables before starting LLaMA Board:
-
-```bash
-export GRADIO_SERVER_PORT=7860 GRADIO_ROOT_PATH=/${JUPYTER_NAME}/proxy/7860/
-```
-
-If you are using AutoDL, please install a specific version of Gradio:
-
-```bash
-pip install gradio==4.10.0
 ```
 
 </details>
@@ -477,7 +495,7 @@ If you have a project that should be incorporated, please contact via email or c
 1. Zhou et al. FREB-TQA: A Fine-Grained Robustness Evaluation Benchmark for Table Question Answering. 2024. [[arxiv]](https://arxiv.org/abs/2404.18585)
 1. **[StarWhisper](https://github.com/Yu-Yang-Li/StarWhisper)**: A large language model for Astronomy, based on ChatGLM2-6B and Qwen-14B.
 1. **[DISC-LawLLM](https://github.com/FudanDISC/DISC-LawLLM)**: A large language model specialized in Chinese legal domain, based on Baichuan-13B, is capable of retrieving and reasoning on legal knowledge.
-1. **[Sunsimiao](https://github.com/thomas-yanxin/Sunsimiao)**: A large language model specialized in Chinese medical domain, based on Baichuan-7B and ChatGLM-6B.
+1. **[Sunsimiao](https://github.com/X-D-Lab/Sunsimiao)**: A large language model specialized in Chinese medical domain, based on Baichuan-7B and ChatGLM-6B.
 1. **[CareGPT](https://github.com/WangRongsheng/CareGPT)**: A series of large language models for Chinese medical domain, based on LLaMA2-7B and Baichuan-13B.
 1. **[MachineMindset](https://github.com/PKU-YuanGroup/Machine-Mindset/)**: A series of MBTI Personality large language models, capable of giving any LLM 16 different personality types based on different datasets and training methods.
 1. **[Luminia-13B-v3](https://huggingface.co/Nekochu/Luminia-13B-v3)**: A large language model specialized in generate metadata for stable diffusion. [[🤗Demo]](https://huggingface.co/spaces/Nekochu/Luminia-13B_SD_Prompt)
