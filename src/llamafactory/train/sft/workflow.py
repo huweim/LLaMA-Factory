@@ -21,12 +21,20 @@ if TYPE_CHECKING:
 
 import torch.nn as nn
 from giant_quant.qmodule import QuantLinear
-def make_linear_quant(module, num_bits=8):
+def make_quant_linear(module, num_bits=8, final_layer_name='lm_head'):
+    """
+    递归替换所有子模块中的 nn.Linear 为 QuantLinear，但保留最终输出层的 Linear
+    """
     for name, child in module.named_children():
-        if isinstance(child, nn.Linear):
-            setattr(module, name, QuantLinear(child.in_features, child.out_features, bias=child.bias is not None))
+        if isinstance(child, nn.Linear) and name != final_layer_name:
+            quant_linear = QuantLinear(child.in_features, child.out_features, bias=child.bias is not None, name=name)
+            quant_linear.weight = child.weight
+            if child.bias is not None:
+                quant_linear.bias = child.bias
+            setattr(module, name, quant_linear)
+            # setattr(module, name, QuantLinear(child.in_features, child.out_features, bias=child.bias is not None, name=name))
         else:
-            make_linear_quant(child, num_bits)
+            make_quant_linear(child, num_bits, final_layer_name)
 
 def run_sft(
     model_args: "ModelArguments",
@@ -59,7 +67,7 @@ def run_sft(
     training_args.remove_unused_columns = False if model_args.visual_inputs else training_args.remove_unused_columns
 
     # replace Linear with QuantLinear
-    make_linear_quant(model)
+    make_quant_linear(model)
     print(model)
     # exit(0)
     # Initialize our Trainer

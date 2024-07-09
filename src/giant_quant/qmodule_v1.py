@@ -70,7 +70,6 @@ class LinearFunction(torch.autograd.Function):
         bias=None,
         name=None,
     ):
-
         # ctx: autograd.Function 提供的上下文对象，用于在前向传播过程中存储信息，以便在反向传播过程中使用。
         # quantize_elemwise_op 是求每个元素的数值，quantize_mx_op 应该是在求 scaling？
 
@@ -81,7 +80,6 @@ class LinearFunction(torch.autograd.Function):
 
         org_input_shape = input.shape
         org_weight_shape = weight.shape
-
 
         if bias is not None:
             ctx.has_bias = True
@@ -105,15 +103,7 @@ class LinearFunction(torch.autograd.Function):
             ctx.save_for_backward(input, weight)
             # init computation
             # with torch.cuda.amp.autocast(enabled=False):
-            
-            # input = input.reshape(-1, in_dim)
-            # print(input.shape, weight.shape)
-            output = f_linear(input, weight) 
-            # print(input.shape, weight.shape, output.shape)
-            
-            # print(name, input, output, weight, output.shape, bias.shape, input.shape, input.mean(), output.mean(), weight.mean())
-            # exit(0)
-
+            output = f_linear(input, weight)
 
 
         if bias is not None:
@@ -123,7 +113,6 @@ class LinearFunction(torch.autograd.Function):
                 output = pseudo_quantize_tensor(output, n_bit=4, zero_point=False, q_group_size=group_size)
             else:
                 output = output + bias
-
 
         # print('forward')
         ctx.name = name

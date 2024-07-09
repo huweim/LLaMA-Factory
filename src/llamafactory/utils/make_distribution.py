@@ -135,7 +135,10 @@ def make_heat_map(tensor_data, layer_idx=0, layer_name="", max_fig=1000, desc=""
     # plt_slice = tensor_data[:256, :256]
 
     # data_list = plt_slice.numpy()
-    data_list = tensor_data.numpy()
+    data_list = tensor_data.detach().numpy()
+
+    # data_list = np.clip(data_list, -0.5, 0.5)
+
     print(data_list.max(), data_list.min())
 
     # 找到正负值的最大绝对值

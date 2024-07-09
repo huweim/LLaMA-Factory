@@ -39,28 +39,43 @@ class CustomSeq2SeqTrainer(Seq2SeqTrainer):
 
             self.accelerator.clip_grad_norm_ = MethodType(clip_grad_norm_for_sparse_tensor, self.accelerator)
         
-        # self.register_hooks()  # Register hooks during initialization
+        # self.heat_map_hooks()  # Register hooks during initialization
         self.counter = 0
     
-    # def register_hooks(self):
+    def heat_map_hooks(self):
 
-    #     for name, param in self.model.named_parameters():
-    #         # print(name, param)
-    #         # exit(0)
-    #         if param.requires_grad:
-    #             # param.register_hook(lambda grad, name=name: print(f"Gradient for {name}: {grad}"))
-    #             # param.register_hook(lambda grad, name=name: print(f"Gradient for {name}: {grad.shape}"))
-    #             # 
-    #             def hook_fn(grad, name=name):
-    #                 self.counter += 1
-    #                 if grad.dim() == 2 and self.counter > 100000:
-    #                     print(f"Gradient for {name}: {grad.shape}")
-    #                     # make_heat_map(grad, name, max_fig=1000)
-    #                     group_dist(grad, -2, layer_name=name, max_fig=1000, num_img=1000)
-    #                     print(grad.max(), grad.min())
-    #                 return grad
+        # for name, param in self.model.named_parameters():
+        #     # print(name, param)
+        #     # exit(0)
+        #     if param.requires_grad:
+        #         # param.register_hook(lambda grad, name=name: print(f"Gradient for {name}: {grad}"))
+        #         # param.register_hook(lambda grad, name=name: print(f"Gradient for {name}: {grad.shape}"))
+        #         # 
+        #         def hook_fn(grad, name=name):
+        #             self.counter += 1
+        #             if grad.dim() == 2 and self.counter > 100000:
+        #                 print(f"Gradient for {name}: {grad.shape}")
+        #                 make_heat_map(grad, name, max_fig=1000)
+        #                 # group_dist(grad, -2, layer_name=name, max_fig=1000, num_img=1000)
+        #                 print(grad.max(), grad.min())
+        #             return grad
+        #         param.register_hook(hook_fn)
 
-    #             param.register_hook(hook_fn)
+        for name, module in self.model.named_modules():
+            if isinstance(module, torch.nn.Linear):  # Customize for specific layers
+                def forward_hook(module, input, output, name=name):
+                    print(name, input[0], output[0], module.weight, input[0].shape, input[0].mean(), output[0].mean(), module.weight.mean())
+                    exit(0)
+                    self.counter += 1
+                    if self.counter > 100000:
+                        output = output.reshape(-1, output.shape[-1])
+                        print(f"Activation for {name}: {output.shape}")
+                        make_heat_map(output, f"Activation_{name}", max_fig=1000)
+                        print(f"Weights for {name}: {module.weight.shape}")
+                        make_heat_map(module.weight, f"Weights_{name}", max_fig=1000)
+                        return output
+
+                module.register_forward_hook(forward_hook)
 
     def create_optimizer(self) -> "torch.optim.Optimizer":
         if self.optimizer is None:
